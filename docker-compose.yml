@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./:/app
+    command: ['/app/chatapp', 'server']
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+    command: ['/app/chatapp', 'client']
+    depends_on:
+      - server
+
+  wscat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+    command: ['wscat', '-c', 'ws://server:8080/ws']
+    depends_on:
+      - server
